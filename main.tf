@@ -3,7 +3,7 @@
 ##############################################################################
 
 locals {
-  ssh_key_id = var.ssh_key != null ? data.ibm_is_ssh_key.existing_ssh_key[0].id : resource.ibm_is_ssh_key.ssh_key[0].id
+  ssh_key_id = var.ssh_key != null ? resource.ibm_is_ssh_key.provided_ssh_key[0].id : resource.ibm_is_ssh_key.ssh_key[0].id
 }
 
 ##############################################################################
@@ -34,9 +34,11 @@ resource "ibm_is_ssh_key" "ssh_key" {
   public_key = resource.tls_private_key.tls_key[0].public_key_openssh
 }
 
-data "ibm_is_ssh_key" "existing_ssh_key" {
-  count = var.ssh_key != null ? 1 : 0
-  name  = var.ssh_key
+resource "ibm_is_ssh_key" "provided_ssh_key" {
+  count          = var.ssh_key != null ? 1 : 0
+  name           = "${var.prefix}-ssh-key"
+  public_key     = replace(var.ssh_key, "/==.*$/", "==")
+  resource_group = module.resource_group.resource_group_id
 }
 
 #############################################################################
