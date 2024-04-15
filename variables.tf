@@ -33,3 +33,9 @@ variable "ssh_key" {
   description = "An existing ssh key name to use for this example, if unset a new ssh key will be created"
   default     = null
 }
+
+variable "ssh_cidr" {
+  type        = string
+  description = "inbound cidr for ssh, used in security group"
+  default     = "0.0.0.0/0"
+}

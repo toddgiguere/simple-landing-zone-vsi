@@ -73,21 +73,33 @@ resource "ibm_is_subnet" "subnet_zone_1" {
 #############################################################################
 
 module "slz_vsi" {
-  source                = "git::https://github.com/toddgiguere/terraform-ibm-landing-zone-vsi.git?ref=snapshots"
-  resource_group_id     = module.resource_group.resource_group_id
-  image_id              = "r006-1366d3e6-bf5b-49a0-b69a-8efd93cc225f"
-  create_security_group = false
-  tags                  = var.resource_tags
+  source            = "git::https://github.com/toddgiguere/terraform-ibm-landing-zone-vsi.git?ref=snapshots"
+  resource_group_id = module.resource_group.resource_group_id
+  image_id          = "r006-1366d3e6-bf5b-49a0-b69a-8efd93cc225f"
+  tags              = var.resource_tags
   subnets = [{
     name = resource.ibm_is_subnet.subnet_zone_1.name
     id   = resource.ibm_is_subnet.subnet_zone_1.id
     zone = resource.ibm_is_subnet.subnet_zone_1.zone
   }]
-  vpc_id             = resource.ibm_is_vpc.vpc.id
-  prefix             = var.prefix
-  machine_type       = "cx2-2x4"
-  vsi_per_subnet     = 1
-  user_data          = null
-  ssh_key_ids        = [local.ssh_key_id]
-  enable_floating_ip = true
+  vpc_id                = resource.ibm_is_vpc.vpc.id
+  prefix                = var.prefix
+  machine_type          = "cx2-2x4"
+  vsi_per_subnet        = 1
+  user_data             = null
+  ssh_key_ids           = [local.ssh_key_id]
+  enable_floating_ip    = true
+  create_security_group = true
+  security_group = {
+    name = "${var.prefix}-vsi-sg"
+    rules = [{
+      name      = "ibm-ssh"
+      direction = "inbound"
+      source    = var.ssh_cidr
+      tcp = {
+        port_max = 22
+        port_min = 22
+      }
+    }]
+  }
 }
