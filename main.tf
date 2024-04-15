@@ -83,10 +83,11 @@ module "slz_vsi" {
     id   = resource.ibm_is_subnet.subnet_zone_1.id
     zone = resource.ibm_is_subnet.subnet_zone_1.zone
   }]
-  vpc_id         = resource.ibm_is_vpc.vpc.id
-  prefix         = var.prefix
-  machine_type   = "cx2-2x4"
-  vsi_per_subnet = 1
-  user_data      = null
-  ssh_key_ids    = [local.ssh_key_id]
+  vpc_id             = resource.ibm_is_vpc.vpc.id
+  prefix             = var.prefix
+  machine_type       = "cx2-2x4"
+  vsi_per_subnet     = 1
+  user_data          = null
+  ssh_key_ids        = [local.ssh_key_id]
+  enable_floating_ip = true
 }
