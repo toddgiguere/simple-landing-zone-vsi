@@ -68,10 +68,6 @@ resource "ibm_is_subnet" "subnet_zone_1" {
   public_gateway           = ibm_is_public_gateway.gateway.id
 }
 
-data "ibm_is_subnet" "subnet_zone_1_data" {
-  identifier = resource.ibm_is_subnet.subnet_zone_1.id
-}
-
 #############################################################################
 # Provision VSI
 #############################################################################
@@ -108,7 +104,7 @@ module "slz_vsi" {
       {
         name      = "all-out"
         direction = "outbound"
-        source    = data.ibm_is_subnet.subnet_zone_1_data.ipv4_cidr_block
+        source    = "0.0.0.0/0"
       }
     ]
   }
