@@ -3,7 +3,7 @@
 ##############################################################################
 
 locals {
-  ssh_key_id = var.ssh_key != null ? resource.ibm_is_ssh_key.provided_ssh_key[0].id : resource.ibm_is_ssh_key.ssh_key[0].id
+  ssh_key_id = var.existing_ssh_key_name != null ? data.ibm_is_ssh_key.existing_ssh_key[0].id : var.ssh_public_key != null ? resource.ibm_is_ssh_key.provided_ssh_key[0].id : resource.ibm_is_ssh_key.ssh_key[0].id
 }
 
 ##############################################################################
@@ -23,22 +23,27 @@ module "resource_group" {
 ##############################################################################
 
 resource "tls_private_key" "tls_key" {
-  count     = var.ssh_key != null ? 0 : 1
+  count     = var.ssh_public_key != null ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "ibm_is_ssh_key" "ssh_key" {
-  count      = var.ssh_key != null ? 0 : 1
+  count      = var.ssh_public_key != null ? 0 : 1
   name       = "${var.prefix}-ssh-key"
   public_key = resource.tls_private_key.tls_key[0].public_key_openssh
 }
 
 resource "ibm_is_ssh_key" "provided_ssh_key" {
-  count          = var.ssh_key != null ? 1 : 0
+  count          = var.ssh_public_key != null ? 1 : 0
   name           = "${var.prefix}-ssh-key"
-  public_key     = replace(var.ssh_key, "/==.*$/", "==")
+  public_key     = replace(var.ssh_public_key, "/==.*$/", "==")
   resource_group = module.resource_group.resource_group_id
+}
+
+data "ibm_is_ssh_key" "existing_ssh_key" {
+  count = var.existing_ssh_key_name != null ? 1 : 0
+  name  = var.existing_ssh_key_name
 }
 
 #############################################################################
@@ -108,4 +113,6 @@ module "slz_vsi" {
       }
     ]
   }
+  boot_volume_snapshot_id    = var.boot_volume_snapshot_id
+  storage_volume_snapshot_id = var.storage_volume_snapshot_id
 }

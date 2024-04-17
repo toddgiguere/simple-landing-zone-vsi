@@ -28,9 +28,15 @@ variable "resource_tags" {
   default     = null
 }
 
-variable "ssh_key" {
+variable "ssh_public_key" {
   type        = string
   description = "An existing ssh key name to use for this example, if unset a new ssh key will be created"
+  default     = null
+}
+
+variable "existing_ssh_key_name" {
+  description = "An existing ssh key ID that exists in region"
+  type        = string
   default     = null
 }
 
@@ -38,4 +44,16 @@ variable "ssh_cidr" {
   type        = string
   description = "inbound cidr for ssh, used in security group"
   default     = "0.0.0.0/0"
+}
+
+variable "boot_volume_snapshot_id" {
+  description = "The snapshot id of the volume to be used for creating boot volume attachment (if specified, the `image_id` parameter will not be used)"
+  type        = string
+  default     = null
+}
+
+variable "storage_volume_snapshot_id" {
+  description = "The snapshot id of the volume to be used for creating block storage volumes"
+  type        = string
+  default     = null
 }
