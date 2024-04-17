@@ -113,6 +113,11 @@ module "slz_vsi" {
       }
     ]
   }
+  block_storage_volumes = [
+    {
+      name    = "vsi-block"
+      profile = "10iops-tier"
+  }]
   boot_volume_snapshot_id    = var.boot_volume_snapshot_id
   storage_volume_snapshot_id = var.storage_volume_snapshot_id
 }
