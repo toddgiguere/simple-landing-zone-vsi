@@ -23,13 +23,13 @@ module "resource_group" {
 ##############################################################################
 
 resource "tls_private_key" "tls_key" {
-  count     = var.ssh_public_key != null ? 0 : 1
+  count     = (var.ssh_public_key == null && var.existing_ssh_key_name == null) ? 1 : 0
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "ibm_is_ssh_key" "ssh_key" {
-  count      = var.ssh_public_key != null ? 0 : 1
+  count      = (var.ssh_public_key == null && var.existing_ssh_key_name == null) ? 1 : 0
   name       = "${var.prefix}-ssh-key"
   public_key = resource.tls_private_key.tls_key[0].public_key_openssh
 }
