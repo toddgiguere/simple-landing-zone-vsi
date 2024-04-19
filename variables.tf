@@ -52,7 +52,13 @@ variable "boot_volume_snapshot_id" {
   default     = null
 }
 
-variable "storage_volume_snapshot_id" {
+variable "storage_volume_snapshot_id_1" {
+  description = "The snapshot id of the volume to be used for creating block storage volumes"
+  type        = string
+  default     = null
+}
+
+variable "storage_volume_snapshot_id_2" {
   description = "The snapshot id of the volume to be used for creating block storage volumes"
   type        = string
   default     = null

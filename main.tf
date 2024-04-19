@@ -94,6 +94,7 @@ module "slz_vsi" {
   user_data             = null
   ssh_key_ids           = [local.ssh_key_id]
   enable_floating_ip    = true
+  manage_reserved_ips   = true
   create_security_group = true
   security_group = {
     name = "${var.prefix}-vsi-sg"
@@ -115,9 +116,14 @@ module "slz_vsi" {
   }
   block_storage_volumes = [
     {
-      name    = "vsi-block"
-      profile = "10iops-tier"
+      name        = "vsi-block-1"
+      profile     = "10iops-tier"
+      snapshot_id = var.storage_volume_snapshot_id_1
+    },
+    {
+      name        = "vsi-block-2"
+      profile     = "10iops-tier"
+      snapshot_id = var.storage_volume_snapshot_id_2
   }]
-  boot_volume_snapshot_id    = var.boot_volume_snapshot_id
-  storage_volume_snapshot_id = var.storage_volume_snapshot_id
+  boot_volume_snapshot_id = var.boot_volume_snapshot_id
 }
